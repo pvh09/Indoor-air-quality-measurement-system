@@ -26,18 +26,20 @@ namespace Giaodien_Quanly_Vuon
         private DateTime datetime;  //Khai báo biến thời gian
 
         int baudrate = 0;
-        string nhietdo = String.Empty; // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
-        string doam = String.Empty; // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
-        string anhsang = String.Empty;  // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
+        string temp = String.Empty; // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
+        string humi = String.Empty; // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
+        string co2 = String.Empty;  // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
+        string pm25 = String.Empty; // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
+        string voc = String.Empty; // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
+        string o3 = String.Empty;  // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
         int status = 0; // Khai báo biến để xử lý sự kiện vẽ đồ thị
-        string statuslamp = String.Empty;
-        string statuspump = String.Empty;
-        string StrDoam = String.Empty;
-        string Strlight = String.Empty;
         //Khai báo biến thời gian để vẽ đồ thị
-        double m_doam = 0;
-        double m_anhsang = 0;
-        double m_nhietdo = 0;
+        double m_temp = 0;
+        double m_humi = 0;
+        double m_co2 = 0;
+        double m_pm25 = 0;
+        double m_voc = 0;
+        double m_o3 = 0;
 
         int i = 0;
         public Home()
@@ -47,12 +49,8 @@ namespace Giaodien_Quanly_Vuon
         // Có 2 cách làm với Đăng xuất
         //public event EventHandler Dangxuat;
         private void btnDangxuat_Click(object sender, EventArgs e)
-        {
-            //if (MessageBox.Show("Bạn có chắc muốn đăng xuất không?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
-                //Dangxuat(this, new EventArgs());
-
-            
-            if (MessageBox.Show("Bạn có chắc muốn đăng xuất không?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+        {  
+            if (MessageBox.Show("Are you sure you want to sign out?", "Notification", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
             {
                 this.Hide();
                 DangNhap dangNhap = new DangNhap();
@@ -63,7 +61,7 @@ namespace Giaodien_Quanly_Vuon
         private void button_Thoat_Click(object sender, EventArgs e)
         {
             DialogResult traloi;
-            traloi = MessageBox.Show("Bạn có chắc muốn thoát?", "Thoát", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            traloi = MessageBox.Show("Are you sure you want to quit?", "Quit", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             if (traloi == DialogResult.OK)
             {
                // Application.Exit(); // Đóng ứng dụng
@@ -100,18 +98,24 @@ namespace Giaodien_Quanly_Vuon
 
             // Khởi tạo ZedGraph
             GraphPane myPane = zedGraphControl1.GraphPane;
-            myPane.Title.Text = "Đồ thị hiển thị dữ liệu theo thời gian";
-            myPane.XAxis.Title.Text = "Thời gian (s)";
-            myPane.YAxis.Title.Text = "Dữ liệu";
+            myPane.Title.Text = "Real-time data visualization";
+            myPane.XAxis.Title.Text = "Time (s)";
+            myPane.YAxis.Title.Text = "Data";
 
             // Danh sách dữ liệu gồm 60000 phần tử có thể cuốn chiếu lại
             RollingPointPairList list = new RollingPointPairList(60000);
             RollingPointPairList list1 = new RollingPointPairList(60000);
             RollingPointPairList list2 = new RollingPointPairList(60000);
+            RollingPointPairList list3 = new RollingPointPairList(60000);
+            RollingPointPairList list4 = new RollingPointPairList(60000);
+            RollingPointPairList list6= new RollingPointPairList(60000);
             // Phần đặt tên chú thích cho 3 thông số trên biểu đồ
-            LineItem curve = myPane.AddCurve("Nhiệt độ", list, Color.Red, SymbolType.None);
-            LineItem curve1 = myPane.AddCurve("Độ ẩm", list1, Color.Blue, SymbolType.None);
-            LineItem curve2 = myPane.AddCurve("Ánh sáng", list2, Color.Yellow, SymbolType.None);
+            LineItem curve = myPane.AddCurve("Temperature", list, Color.Red, SymbolType.None);
+            LineItem curve1 = myPane.AddCurve("Humidity", list1, Color.Blue, SymbolType.None);
+            LineItem curve2 = myPane.AddCurve("CO2 Concentration", list2, Color.Chocolate, SymbolType.None);
+            LineItem curve3 = myPane.AddCurve("PM2.5 Concentration", list, Color.Violet, SymbolType.None);
+            LineItem curve4 = myPane.AddCurve("VOC Concentration", list1, Color.Yellow, SymbolType.None);
+            LineItem curve5 = myPane.AddCurve("O3 Concentration", list2, Color.Green, SymbolType.None);
 
             myPane.XAxis.Scale.Min = 0;
             myPane.XAxis.Scale.Max = 30;
@@ -150,17 +154,19 @@ namespace Giaodien_Quanly_Vuon
             try
             {
                 string[] arrList = serialPort1.ReadLine().Split('|'); // Đọc một dòng của Serial, cắt chuỗi khi gặp ký tự gạch đứng
-                doam = arrList[0]; // Chuỗi đầu tiên lưu vào SRealTime
-                anhsang = arrList[1]; // Chuỗi thứ hai lưu vào SDatas
-                nhietdo = arrList[2];
-                statuslamp = arrList[3];
-                statuspump = arrList[4];
-                StrDoam = arrList[5];
-                Strlight = arrList[6];
+                temp = arrList[0]; // Chuỗi đầu tiên lưu vào SRealTime
+                humi = arrList[1]; // Chuỗi thứ hai lưu vào SDatas
+                co2 = arrList[2];
+                pm25 = arrList[3];
+                voc = arrList[4];
+                o3 = arrList[5];
                 i++;
-                double.TryParse(doam, out m_doam); // Chuyển đổi sang kiểu double
-                double.TryParse(anhsang, out m_anhsang);
-                double.TryParse(nhietdo, out m_nhietdo);
+                double.TryParse(temp, out m_temp); // Chuyển đổi sang kiểu double
+                double.TryParse(humi, out m_humi);
+                double.TryParse(co2, out m_co2);
+                double.TryParse(pm25, out m_pm25); // Chuyển đổi sang kiểu double
+                double.TryParse(voc, out m_voc);
+                double.TryParse(o3, out m_o3);
                 //realtime = realtime / 1000.0; // Đối ms sang s
                 status = 1; // Bắt sự kiện xử lý xong chuỗi, đổi starus về 1 để hiển thị dữ liệu trong ListView và vẽ đồ thị
             }
@@ -181,6 +187,9 @@ namespace Giaodien_Quanly_Vuon
             LineItem curve = zedGraphControl1.GraphPane.CurveList[0] as LineItem;
             LineItem curve1 = zedGraphControl1.GraphPane.CurveList[1] as LineItem;
             LineItem curve2 = zedGraphControl1.GraphPane.CurveList[2] as LineItem;
+            LineItem curve3 = zedGraphControl1.GraphPane.CurveList[3] as LineItem;
+            LineItem curve4 = zedGraphControl1.GraphPane.CurveList[4] as LineItem;
+            LineItem curve5 = zedGraphControl1.GraphPane.CurveList[5] as LineItem;
 
             if (curve == null)
                 return;
@@ -188,18 +197,30 @@ namespace Giaodien_Quanly_Vuon
                 return;
             if (curve2 == null)
                 return;
+            if (curve3 == null)
+                return;
+            if (curve4 == null)
+                return;
+            if (curve5 == null)
+                return;
 
             // Khai báo danh sách dữ liệu đường cong đồ thị
             IPointListEdit list = curve.Points as IPointListEdit;
             IPointListEdit list1 = curve1.Points as IPointListEdit;
             IPointListEdit list2 = curve2.Points as IPointListEdit;
+            IPointListEdit list3 = curve3.Points as IPointListEdit;
+            IPointListEdit list4 = curve4.Points as IPointListEdit;
+            IPointListEdit list5 = curve5.Points as IPointListEdit;
 
             if (list == null)
                 return;
 
-            list.Add(i, m_nhietdo); // Thêm điểm trên đồ thị
-            list1.Add(i, m_doam);
-            list2.Add(i, m_anhsang);
+            list.Add(i, m_temp); // Thêm điểm trên đồ thị
+            list1.Add(i, m_humi);
+            list2.Add(i, m_co2);
+            list.Add(i, m_pm25); // Thêm điểm trên đồ thị
+            list1.Add(i, m_voc);
+            list2.Add(i, m_o3);
 
             Scale xScale = zedGraphControl1.GraphPane.XAxis.Scale;
             Scale yScale = zedGraphControl1.GraphPane.YAxis.Scale;
@@ -212,29 +233,58 @@ namespace Giaodien_Quanly_Vuon
             }
 
             // Tự động Scale theo trục y
-            if (m_nhietdo > yScale.Max - yScale.MajorStep)
+            if (m_temp > yScale.Max - yScale.MajorStep)
             {
-                yScale.Max = m_nhietdo + yScale.MajorStep;
+                yScale.Max = m_temp + yScale.MajorStep;
             }
-            else if (m_nhietdo < yScale.Min + yScale.MajorStep)
+            else if (m_temp < yScale.Min + yScale.MajorStep)
             {
-                yScale.Min = m_nhietdo - yScale.MajorStep;
+                yScale.Min = m_temp - yScale.MajorStep;
             }
-            if (m_doam > yScale.Max - yScale.MajorStep)
+
+            if (m_humi > yScale.Max - yScale.MajorStep)
             {
-                yScale.Max = m_doam + yScale.MajorStep;
+                yScale.Max = m_humi + yScale.MajorStep;
             }
-            else if (m_doam < yScale.Min + yScale.MajorStep)
+            else if (m_humi < yScale.Min + yScale.MajorStep)
             {
-                yScale.Min = m_doam - yScale.MajorStep;
+                yScale.Min = m_humi - yScale.MajorStep;
             }
-            if (m_anhsang > yScale.Max - yScale.MajorStep)
+
+            if (m_co2 > yScale.Max - yScale.MajorStep)
             {
-                yScale.Max = m_anhsang + yScale.MajorStep;
+                yScale.Max = m_co2 + yScale.MajorStep;
             }
-            else if (m_anhsang < yScale.Min + yScale.MajorStep)
+            else if (m_co2 < yScale.Min + yScale.MajorStep)
             {
-                yScale.Min = m_anhsang - yScale.MajorStep;
+                yScale.Min = m_co2 - yScale.MajorStep;
+            }
+
+            if (m_pm25 > yScale.Max - yScale.MajorStep)
+            {
+                yScale.Max = m_pm25 + yScale.MajorStep;
+            }
+            else if (m_pm25 < yScale.Min + yScale.MajorStep)
+            {
+                yScale.Min = m_pm25 - yScale.MajorStep;
+            }
+
+            if (m_voc > yScale.Max - yScale.MajorStep)
+            {
+                yScale.Max = m_voc + yScale.MajorStep;
+            }
+            else if (m_voc < yScale.Min + yScale.MajorStep)
+            {
+                yScale.Min = m_voc - yScale.MajorStep;
+            }
+
+            if (m_o3 > yScale.Max - yScale.MajorStep)
+            {
+                yScale.Max = m_o3 + yScale.MajorStep;
+            }
+            else if (m_o3 < yScale.Min + yScale.MajorStep)
+            {
+                yScale.Min = m_o3 - yScale.MajorStep;
             }
 
             zedGraphControl1.AxisChange();
@@ -607,6 +657,46 @@ namespace Giaodien_Quanly_Vuon
         }
 
         private void label20_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label24_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label21_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label27_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox3_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
         {
 
         }
