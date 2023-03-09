@@ -91,11 +91,6 @@ namespace Giaodien_Quanly_Vuon
             comboBox1.Text = Properties.Settings.Default.ComName; // Lấy ComName đã làm ở bước 5 cho comboBox
             comboBox2.SelectedIndex = 2;
 
-            // Hiển thị ngày tháng năm, giờ ở góc cuối bên phải giao diện
-            DateTime tn = DateTime.Now;
-            lbDate.Text = tn.ToString("dd/MM/yyyy");
-            lbTime.Text = DateTime.Now.ToLongTimeString();
-
             // Khởi tạo ZedGraph
             GraphPane myPane = zedGraphControl1.GraphPane;
             myPane.Title.Text = "Real-time data visualization";
@@ -300,42 +295,30 @@ namespace Giaodien_Quanly_Vuon
                 return;
             else
             {
-                label9.Text = nhietdo;
-                label10.Text = anhsang;
-                label13.Text = doam;
-                textBox2.Text = StrDoam;
-                textBox3.Text = Strlight;
-                if (statuslamp == "1")
-                {
-                    button5.BackColor = Color.Yellow;
-                }
-                else
-                {
-
-                    button5.BackColor = Color.White;
-                }
-                if (statuspump == "1")
-                {
-                    button6.BackColor = Color.Yellow;
-                }
-                else
-                {
-                    button6.BackColor = Color.White;
-                }
+                label9.Text = temp;
+                label13.Text = humi;
+                label10.Text = co2;
+                label22.Text = pm25;
+                label25.Text = voc;
+                label10.Text = pm25;
+                label28.Text = o3;
 
                 //Tạo 1 chuỗi gồm thời gian hiện tại
                 datetime = DateTime.Now;
                 string time = datetime.Day + "/" + datetime.Month + "/" + datetime.Year + "/" + datetime.Hour + ":" + datetime.Minute + ":" + datetime.Second;
                 //string DataQuery = "Insert into GreenMonitor values ('" + nhietdo + "', '" + doam + "','" + anhsang + "','" + time+ "')";
-                string DataQuery = "Insert into SensorMonitor(Temperature, Humidity, Light, RealTime) values ('" + nhietdo + "', '" + doam + "','" + anhsang + "','" + time + "')";
+                string DataQuery = "INSERT INTO SensorMonitorData(Temperature, Humidity, co2, pm25, voc, o3, realTime) values ('" + temp + "', '" + humi + "','" + co2 + "','" + pm25 + "', '" + voc + "', '" + o3 + "', '" + time + "')";
                 dataModify.SqlCommand(DataQuery);
                 //Tạo listview với cột đầu tiên là thời gian
                 ListViewItem item = new ListViewItem(time); // Gán biến realtime vào cột đầu tiên của ListView
 
                 //Thêm 3 cột tiếp theo là Nhiệt độ, Ánh sáng và Độ ẩm
-                item.SubItems.Add(nhietdo);
-                item.SubItems.Add(anhsang);
-                item.SubItems.Add(doam);
+                item.SubItems.Add(temp);
+                item.SubItems.Add(humi);
+                item.SubItems.Add(co2);
+                item.SubItems.Add(pm25);
+                item.SubItems.Add(voc);
+                item.SubItems.Add(o3);
                 listView1.Items.Add(item); // Gán biến datas vào cột tiếp theo của ListView
 
                 listView1.Items[listView1.Items.Count - 1].EnsureVisible(); // Hiển thị dòng được gán gần nhất ở ListView, tức là mình cuộn ListView theo dữ liệu gần nhất đó
@@ -347,9 +330,12 @@ namespace Giaodien_Quanly_Vuon
         }
         private void ResetValue()
         {
-            doam = String.Empty;    // Khôi phục tất cả các biến vào trạng thái ban đầu
-            nhietdo = String.Empty;
-            anhsang = String.Empty;
+            temp = String.Empty;    // Khôi phục tất cả các biến vào trạng thái ban đầu
+            humi = String.Empty;
+            co2 = String.Empty;
+            pm25 = String.Empty;   
+            voc = String.Empty;
+            o3 = String.Empty;
             status = 0; // Chuyển status về 0
         }
 
@@ -406,67 +392,48 @@ namespace Giaodien_Quanly_Vuon
             }
         }
         // Sự kiện nhấn nút button3 - Auto Run
-        private void button3_Click(object sender, EventArgs e)
-        {
-            if (serialPort1.IsOpen)
-            {
-                serialPort1.Write("1"); //Gửi ký tự "1" qua Serial, chạy hàm tạo Random ở Arduino
-                button5.Enabled = false;
-                button6.Enabled = false;
-                button3.BackColor = Color.Green;
-                button4.BackColor = Color.Gray;
-                button3.Enabled = false;
-                button4.Enabled = true;
-                button8.Enabled = true;
-                button9.Enabled = true;
-                button10.Enabled = true;
-                button11.Enabled = true;
-                button12.Enabled = true;
+        //private void button3_Click(object sender, EventArgs e)
+        //{
+        //    if (serialPort1.IsOpen)
+        //    {
+        //        serialPort1.Write("1"); //Gửi ký tự "1" qua Serial, chạy hàm tạo Random ở Arduino
+        //        button5.Enabled = false;
+        //        button6.Enabled = false;
+        //        button3.BackColor = Color.Green;
+        //        button4.BackColor = Color.Gray;
+        //        button3.Enabled = false;
+        //        button4.Enabled = true;
+        //        button8.Enabled = true;
+        //        button9.Enabled = true;
+        //        button10.Enabled = true;
+        //        button11.Enabled = true;
+        //        button12.Enabled = true;
 
-            }
-            else
-                MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+        //    }
+        //    else
+        //        MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //}
         // Sự kiện nhấn nút button4 - Manual - Chế độ Thủ công
-        private void button4_Click(object sender, EventArgs e)
-        {
-            if (serialPort1.IsOpen)
-            {
-                button5.Enabled = true;
-                button6.Enabled = true;
-                button3.BackColor = Color.Gray;
-                button4.BackColor = Color.Green;
-                button3.Enabled = true;
-                button4.Enabled = false;
-                button8.Enabled = true;
-                button9.Enabled = false;
-                button10.Enabled = false;
-                button11.Enabled = false;
-                button12.Enabled = false;
-            }
-            else
-                MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+        //private void button4_Click(object sender, EventArgs e)
+        //{
+        //    if (serialPort1.IsOpen)
+        //    {
+        //        button5.Enabled = true;
+        //        button6.Enabled = true;
+        //        button3.BackColor = Color.Gray;
+        //        button4.BackColor = Color.Green;
+        //        button3.Enabled = true;
+        //        button4.Enabled = false;
+        //        button8.Enabled = true;
+        //        button9.Enabled = false;
+        //        button10.Enabled = false;
+        //        button11.Enabled = false;
+        //        button12.Enabled = false;
+        //    }
+        //    else
+        //        MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //}
         // Sự kiện nhấn nút button5 - LAMP
-        private void button5_Click(object sender, EventArgs e)
-        {
-            if (serialPort1.IsOpen)
-            {
-                serialPort1.Write("2");
-            }
-            else
-                MessageBox.Show("Bạn không thể dừng khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-        // Sự kiện nhấn nút button6 - PUMP
-        private void button6_Click(object sender, EventArgs e)
-        {
-            if (serialPort1.IsOpen)
-            {
-                serialPort1.Write("3");
-            }
-            else
-                MessageBox.Show("Bạn không thể dừng khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
 
         // Sự kiện nhấn nút button7 - Pause
         private void button7_Click(object sender, EventArgs e)
@@ -697,6 +664,61 @@ namespace Giaodien_Quanly_Vuon
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lbDate_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label22_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label25_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label28_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
         {
 
         }
