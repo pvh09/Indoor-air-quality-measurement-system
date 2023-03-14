@@ -53,8 +53,8 @@ namespace Giaodien_Quanly_Vuon
             if (MessageBox.Show("Are you sure you want to sign out?", "Notification", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
             {
                 this.Hide();
-                DangNhap dangNhap = new DangNhap();
-                dangNhap.ShowDialog();
+                Login login = new Login();
+                login.ShowDialog();
             } 
         }
 
@@ -103,14 +103,14 @@ namespace Giaodien_Quanly_Vuon
             RollingPointPairList list2 = new RollingPointPairList(60000);
             RollingPointPairList list3 = new RollingPointPairList(60000);
             RollingPointPairList list4 = new RollingPointPairList(60000);
-            RollingPointPairList list6= new RollingPointPairList(60000);
+            RollingPointPairList list5= new RollingPointPairList(60000);
             // Phần đặt tên chú thích cho 3 thông số trên biểu đồ
             LineItem curve = myPane.AddCurve("Temperature", list, Color.Red, SymbolType.None);
             LineItem curve1 = myPane.AddCurve("Humidity", list1, Color.Blue, SymbolType.None);
             LineItem curve2 = myPane.AddCurve("CO2 Concentration", list2, Color.Chocolate, SymbolType.None);
-            LineItem curve3 = myPane.AddCurve("PM2.5 Concentration", list, Color.Violet, SymbolType.None);
-            LineItem curve4 = myPane.AddCurve("VOC Concentration", list1, Color.Yellow, SymbolType.None);
-            LineItem curve5 = myPane.AddCurve("O3 Concentration", list2, Color.Green, SymbolType.None);
+            LineItem curve3 = myPane.AddCurve("PM2.5 Concentration", list3, Color.Violet, SymbolType.None);
+            LineItem curve4 = myPane.AddCurve("VOC Concentration", list4, Color.Yellow, SymbolType.None);
+            LineItem curve5 = myPane.AddCurve("O3 Concentration", list5, Color.Green, SymbolType.None);
 
             myPane.XAxis.Scale.Min = 0;
             myPane.XAxis.Scale.Max = 30;
@@ -213,9 +213,9 @@ namespace Giaodien_Quanly_Vuon
             list.Add(i, m_temp); // Thêm điểm trên đồ thị
             list1.Add(i, m_humi);
             list2.Add(i, m_co2);
-            list.Add(i, m_pm25); // Thêm điểm trên đồ thị
-            list1.Add(i, m_voc);
-            list2.Add(i, m_o3);
+            list3.Add(i, m_pm25); // Thêm điểm trên đồ thị
+            list4.Add(i, m_voc);
+            list5.Add(i, m_o3);
 
             Scale xScale = zedGraphControl1.GraphPane.XAxis.Scale;
             Scale yScale = zedGraphControl1.GraphPane.YAxis.Scale;
@@ -351,23 +351,23 @@ namespace Giaodien_Quanly_Vuon
                 try
                 {
                     serialPort1.Open();
-                    label15.Text = "Đang kết nối";
+                    label15.Text = "Connecting...";
                     label15.ForeColor = Color.Green;
                     button8.Enabled = false;
                     button1.Enabled = false;
                     button2.Enabled = true;
-                    toolStripStatusLabel1.Text = "Kết nối thành công cổng COM!";
+                    toolStripStatusLabel1.Text = "Connecting COM sucessfull!";
                     toolStripStatusLabel1.ForeColor = Color.Green;
                 }
                 catch
                 {
-                    MessageBox.Show("Không thể mở cổng " + serialPort1.PortName, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Can not COM gate " + serialPort1.PortName, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 SaveSetting(); // Lưu cổng COM vào ComName
             }
             else
             {
-                MessageBox.Show("Đang mở cổng Com");
+                MessageBox.Show("Openning COM gate");
             }
         }
         // Sự kiện nhấn nút button2 - Disconnect
@@ -381,61 +381,16 @@ namespace Giaodien_Quanly_Vuon
                 button2.Enabled = false;
                 button1.Enabled = true;
                 button8.Enabled = true;
-                label15.Text = "Ngắt kết nối";
+                label15.Text = "Disconnect";
                 label15.ForeColor = Color.Red;
-                toolStripStatusLabel1.Text = "Đã ngắt kết nối cổng COM!";
+                toolStripStatusLabel1.Text = "Disconnected COM gate!";
                 toolStripStatusLabel1.ForeColor = Color.Red;
             }
             else
             {
-                MessageBox.Show("Cổng Com đang đóng");
+                MessageBox.Show("GOM gate disable");
             }
         }
-        // Sự kiện nhấn nút button3 - Auto Run
-        //private void button3_Click(object sender, EventArgs e)
-        //{
-        //    if (serialPort1.IsOpen)
-        //    {
-        //        serialPort1.Write("1"); //Gửi ký tự "1" qua Serial, chạy hàm tạo Random ở Arduino
-        //        button5.Enabled = false;
-        //        button6.Enabled = false;
-        //        button3.BackColor = Color.Green;
-        //        button4.BackColor = Color.Gray;
-        //        button3.Enabled = false;
-        //        button4.Enabled = true;
-        //        button8.Enabled = true;
-        //        button9.Enabled = true;
-        //        button10.Enabled = true;
-        //        button11.Enabled = true;
-        //        button12.Enabled = true;
-
-        //    }
-        //    else
-        //        MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //}
-        // Sự kiện nhấn nút button4 - Manual - Chế độ Thủ công
-        //private void button4_Click(object sender, EventArgs e)
-        //{
-        //    if (serialPort1.IsOpen)
-        //    {
-        //        button5.Enabled = true;
-        //        button6.Enabled = true;
-        //        button3.BackColor = Color.Gray;
-        //        button4.BackColor = Color.Green;
-        //        button3.Enabled = true;
-        //        button4.Enabled = false;
-        //        button8.Enabled = true;
-        //        button9.Enabled = false;
-        //        button10.Enabled = false;
-        //        button11.Enabled = false;
-        //        button12.Enabled = false;
-        //    }
-        //    else
-        //        MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //}
-        // Sự kiện nhấn nút button5 - LAMP
-
-        // Sự kiện nhấn nút button7 - Pause
         private void button7_Click(object sender, EventArgs e)
         {
             if (serialPort1.IsOpen)
@@ -443,14 +398,14 @@ namespace Giaodien_Quanly_Vuon
                 serialPort1.Write("8");
             }
             else
-                MessageBox.Show("Bạn không thể dừng khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Can not stop until the device is connected", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         // Sự kiện nhấn nút button8 - Exit
         private void button8_Click(object sender, EventArgs e)
         {
-            DialogResult traloi;
-            traloi = MessageBox.Show("Bạn có chắc muốn thoát?", "Thoát", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-            if (traloi == DialogResult.OK)
+            DialogResult ans;
+            ans = MessageBox.Show("Are you sure you want to quit?", "Quit", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (ans == DialogResult.OK)
             {
                 //Application.Exit(); // Đóng ứng dụng
             }
@@ -464,16 +419,22 @@ namespace Giaodien_Quanly_Vuon
             Microsoft.Office.Interop.Excel.Workbook wb = xla.Workbooks.Add(Microsoft.Office.Interop.Excel.XlSheetType.xlWorksheet);
             Microsoft.Office.Interop.Excel.Worksheet ws = (Microsoft.Office.Interop.Excel.Worksheet)xla.ActiveSheet;
 
-            // Đặt tên cho 4 ô A1, B1, C1, D1 lần lượt là "Thời gian (s)" ; "Nhiệt độ (°C)" ; "Ánh sáng (%)" và "Độ ẩm (%)" sau đó tự động dãn độ rộng
             Microsoft.Office.Interop.Excel.Range rg = (Microsoft.Office.Interop.Excel.Range)ws.get_Range("A1", "B1");
             Microsoft.Office.Interop.Excel.Range rf = (Microsoft.Office.Interop.Excel.Range)ws.get_Range("C1", "D1");
-            ws.Cells[1, 1] = "Thời gian (s)                ";
-            ws.Cells[1, 2] = "Nhiệt độ (°C)";
-            ws.Cells[1, 3] = "Ánh sáng (%) ";
-            ws.Cells[1, 4] = "Độ ẩm (%) ";
+            Microsoft.Office.Interop.Excel.Range ry = (Microsoft.Office.Interop.Excel.Range)ws.get_Range("E1", "F1");
+            Microsoft.Office.Interop.Excel.Range rz = (Microsoft.Office.Interop.Excel.Range)ws.get_Range("E1", null);
+
+            ws.Cells[1, 1] = "Time (s)                ";
+            ws.Cells[1, 2] = "Temperature (°C)";
+            ws.Cells[1, 3] = "Humidity (%)";
+            ws.Cells[1, 4] = "CO2 Concentration(ppm)";
+            ws.Cells[1, 5] = "PM2.5 Concentration(ppm)";
+            ws.Cells[1, 6] = "VOC Concentration(ppm)";
+            ws.Cells[1, 7] = "O3 Concentration(ppm)";
             rg.Columns.AutoFit();
             rf.Columns.AutoFit();
-
+            ry.Columns.AutoFit();
+            rz.Columns.AutoFit();
             // Lưu từ ô đầu tiên của dòng thứ 2, tức ô A2
             int i = 2;
             int j = 1;
@@ -494,9 +455,9 @@ namespace Giaodien_Quanly_Vuon
         // Hàm thiết lập nút bấm "Lưu"
         private void bt_save_Click_1(object sender, EventArgs e)
         {
-            DialogResult traloi;
-            traloi = MessageBox.Show("Bạn có muốn lưu số liệu?", "Lưu", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-            if (traloi == DialogResult.OK)
+            DialogResult ans;
+            ans = MessageBox.Show("Do you want to save the data?", "Save", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (ans == DialogResult.OK)
             {
                 SaveToExcel(); // Thực thi hàm lưu ListView sang Excel
             }
@@ -507,9 +468,9 @@ namespace Giaodien_Quanly_Vuon
         {
             if (serialPort1.IsOpen)
             {
-                DialogResult traloi;
-                traloi = MessageBox.Show("Bạn có chắc muốn xóa dữ liệu?", "Xóa dữ liệu", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-                if (traloi == DialogResult.OK)
+                DialogResult ans;
+                ans = MessageBox.Show("Are you sure you want to delete the data?", "Delete data", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (ans == DialogResult.OK)
                 {
                     if (serialPort1.IsOpen)
                     {
@@ -523,69 +484,18 @@ namespace Giaodien_Quanly_Vuon
                         ResetValue();
                     }
                     else
-                        MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Cannot run without connecting to the device", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else
-                MessageBox.Show("Bạn không thể xóa khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Cannot delete without connecting to the device", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         // Hàm này đơn giản là mình có thể ghi thông tin các thành viên nhóm hay lời cảm ơn với thầy cô
         private void bt_about_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("NHÓM 09: Hệ thống vườn thông minh giám sát, điều khiển nhiệt độ, độ ẩm và ánh sáng \n\nTHÀNH VIÊN:\n Phí Văn Hòa: 19021047 \n Hoàng Văn Thịnh: 19021117 \n Nguyễn Văn Tùng: 19021133 \n\nChân thành cảm ơn thầy TS. Hoàng Văn Mạnh đã đồng hành và giúp đỡ chúng em hoàn thành môn học !  ", "Thông tin");
-        }
-
-        private void groupBox7_Enter(object sender, EventArgs e)
-        {
-            if (serialPort1.IsOpen)
-            {
-
-                serialPort1.Write("8");
-            }
-            else
-                MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("PROJECT: INTEGRATED SENSOR SYSTEM FOR INDOOR AIR QUALITY MONITOR \n \nStudent name: Phi Van Hoa     Phone: 0967924460    Instructor: Dr. Tran Cuong Hung", "Information");
         }
         // Set Độ ẩm tăng lên 1 đơn vị
-        private void button9_Click(object sender, EventArgs e)
-        {
-            if (serialPort1.IsOpen)
-            {
-
-                serialPort1.Write("4");
-            }
-            else
-                MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-        // Set Độ ẩm giảm lên 1 đơn vị
-        private void button10_Click(object sender, EventArgs e)
-        {
-            if (serialPort1.IsOpen)
-            {
-                serialPort1.Write("5");
-            }
-            else
-                MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-        // Set Ánh sáng tăng lên 1 đơn vị
-        private void button11_Click(object sender, EventArgs e)
-        {
-            if (serialPort1.IsOpen)
-            {
-                serialPort1.Write("6");
-            }
-            else
-                MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-        // Set Ánh sáng giảm lên 1 đơn vị
-        private void button12_Click(object sender, EventArgs e)
-        {
-            if (serialPort1.IsOpen)
-            {
-                serialPort1.Write("7");
-            }
-            else
-                MessageBox.Show("Bạn không thể chạy khi chưa kết nối với thiết bị", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {

@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Giaodien_Quanly_Vuon
 {
-    public partial class DangNhap : Form
+    public partial class Login : Form
     {
-        public DangNhap()
+        public Login()
         {
             InitializeComponent();
         }
@@ -38,12 +38,12 @@ namespace Giaodien_Quanly_Vuon
 
             if (tentk.Trim() == "")
             {
-                MessageBox.Show("Vui lòng nhập tên tài khoản!", "Thông báo"); 
+                MessageBox.Show("Please enter your account!", "Notification"); 
                 return;
             }
             else if (matkhau.Trim() == "")
             {
-                MessageBox.Show("Vui lòng nhập mật khẩu!", "Thông báo"); 
+                MessageBox.Show("Enter password!", "Notification"); 
                 return;
             }
             else
@@ -51,7 +51,7 @@ namespace Giaodien_Quanly_Vuon
                 string query = "Select * from TaiKhoan where TenTaiKhoan = '" + tentk + "' and MatKhau = '" + matkhau + "'";
                 if (modify.TaiKhoans(query).Count != 0)
                 {
-                    MessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Success login!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.Hide();
                     Home home = new Home();
                     home.ShowDialog();
@@ -59,7 +59,7 @@ namespace Giaodien_Quanly_Vuon
                 }
                 else
                 {
-                    MessageBox.Show("Tên tài khoản hoặc mật khẩu bạn nhập không chính xác!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("The username or password entered is incorrect!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -79,7 +79,7 @@ namespace Giaodien_Quanly_Vuon
         private void btnThoat_Click(object sender, EventArgs e)
         {
             DialogResult traloi;
-            traloi = MessageBox.Show("Bạn có chắc muốn thoát?", "Thoát", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            traloi = MessageBox.Show("Are you sure quit?", "Exit", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             if (traloi == DialogResult.OK)
             {
                 Application.Exit(); // Đóng ứng dụng

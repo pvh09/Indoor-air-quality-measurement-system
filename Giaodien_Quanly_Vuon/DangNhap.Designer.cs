@@ -1,6 +1,6 @@
 ﻿namespace Giaodien_Quanly_Vuon
 {
-    partial class DangNhap
+    partial class Login
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DangNhap));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Login));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.linkLabel_DangKy = new System.Windows.Forms.LinkLabel();
             this.linkLabel_QuenMatKhau = new System.Windows.Forms.LinkLabel();
@@ -73,7 +73,7 @@
             this.groupBox1.Size = new System.Drawing.Size(629, 389);
             this.groupBox1.TabIndex = 27;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Thông tin đăng nhập";
+            this.groupBox1.Text = "Login";
             // 
             // linkLabel_DangKy
             // 
@@ -82,10 +82,10 @@
             this.linkLabel_DangKy.Location = new System.Drawing.Point(435, 183);
             this.linkLabel_DangKy.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.linkLabel_DangKy.Name = "linkLabel_DangKy";
-            this.linkLabel_DangKy.Size = new System.Drawing.Size(96, 25);
+            this.linkLabel_DangKy.Size = new System.Drawing.Size(95, 25);
             this.linkLabel_DangKy.TabIndex = 21;
             this.linkLabel_DangKy.TabStop = true;
-            this.linkLabel_DangKy.Text = "Đăng ký";
+            this.linkLabel_DangKy.Text = "Register";
             this.linkLabel_DangKy.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_DangKy_LinkClicked);
             // 
             // linkLabel_QuenMatKhau
@@ -95,10 +95,10 @@
             this.linkLabel_QuenMatKhau.Location = new System.Drawing.Point(137, 183);
             this.linkLabel_QuenMatKhau.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.linkLabel_QuenMatKhau.Name = "linkLabel_QuenMatKhau";
-            this.linkLabel_QuenMatKhau.Size = new System.Drawing.Size(167, 25);
+            this.linkLabel_QuenMatKhau.Size = new System.Drawing.Size(181, 25);
             this.linkLabel_QuenMatKhau.TabIndex = 20;
             this.linkLabel_QuenMatKhau.TabStop = true;
-            this.linkLabel_QuenMatKhau.Text = "Quên mật khẩu";
+            this.linkLabel_QuenMatKhau.Text = "Forget password";
             this.linkLabel_QuenMatKhau.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_QuenMatKhau_LinkClicked);
             // 
             // pictureBox3
@@ -106,7 +106,7 @@
             this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox3.Image = global::Giaodien_Quanly_Vuon.Properties.Resources._lock;
             this.pictureBox3.Location = new System.Drawing.Point(143, 116);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(40, 37);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -118,7 +118,7 @@
             this.pictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox2.Image = global::Giaodien_Quanly_Vuon.Properties.Resources.user_icon;
             this.pictureBox2.Location = new System.Drawing.Point(143, 50);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(40, 37);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -131,7 +131,7 @@
             this.ckbShowPassword.AutoSize = true;
             this.ckbShowPassword.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ckbShowPassword.Location = new System.Drawing.Point(295, 244);
-            this.ckbShowPassword.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.ckbShowPassword.Margin = new System.Windows.Forms.Padding(5);
             this.ckbShowPassword.Name = "ckbShowPassword";
             this.ckbShowPassword.Size = new System.Drawing.Size(162, 27);
             this.ckbShowPassword.TabIndex = 15;
@@ -197,7 +197,7 @@
             this.button_DangNhap.Name = "button_DangNhap";
             this.button_DangNhap.Size = new System.Drawing.Size(199, 48);
             this.button_DangNhap.TabIndex = 13;
-            this.button_DangNhap.Text = "Đăng nhập";
+            this.button_DangNhap.Text = "Login";
             this.button_DangNhap.UseVisualStyleBackColor = false;
             this.button_DangNhap.Click += new System.EventHandler(this.button_DangNhap_Click);
             // 
@@ -217,13 +217,12 @@
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Times New Roman", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(188, 17);
+            this.label1.Location = new System.Drawing.Point(252, 23);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(1094, 32);
+            this.label1.Size = new System.Drawing.Size(964, 32);
             this.label1.TabIndex = 25;
-            this.label1.Text = "Đăng nhập hệ thống Vườn thông minh giám sát và điều khiển nhiệt độ, độ ẩm và ánh " +
-    "sáng\r\n";
+            this.label1.Text = "INTEGRATED SENSOR SYSTEM FOR INDOOR AIR QUALITY MONITOR";
             // 
             // pictureBox4
             // 
@@ -249,7 +248,7 @@
             this.pictureBox1.TabIndex = 26;
             this.pictureBox1.TabStop = false;
             // 
-            // DangNhap
+            // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -260,9 +259,9 @@
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
-            this.Name = "DangNhap";
+            this.Name = "Login";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FormDangNhap";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DangNhap_FormClosing);
