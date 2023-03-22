@@ -11,9 +11,9 @@ using System.Text.RegularExpressions;
 
 namespace Giaodien_Quanly_Vuon
 {
-    public partial class DangKy : Form
+    public partial class Resgister : Form
     {
-        public DangKy()
+        public Resgister()
         {
             InitializeComponent();
         }
@@ -55,14 +55,14 @@ namespace Giaodien_Quanly_Vuon
                 MessageBox.Show("Please enter correct email format", "Notification");
                 return;
             }
-            if (modify.TaiKhoans("Select * from TaiKhoan where Email = '" + email + "'").Count != 0)
+            if (modify.Accounts("SELECT * FROM Account where gmail = '" + email + "'").Count != 0)
             {
                 MessageBox.Show("This email esixted, please register other email!", "Notification");
                 return;
             }
             try
             {
-                string query = "Insert into Taikhoan values ('" + account + "', '" + password + "','" + email + "')";
+                string query = "Insert into Account values ('" + account + "', '" + password + "','" + email + "')";
                 modify.Command(query);
                 if (MessageBox.Show("Sign up completed! Do you want to login??", "Notification", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
@@ -77,9 +77,9 @@ namespace Giaodien_Quanly_Vuon
 
         private void btnThoat_Click(object sender, EventArgs e)
         {
-            DialogResult traloi;
-            traloi = MessageBox.Show("Are you sure you want to exit?", "Quit", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-            if (traloi == DialogResult.OK)
+            DialogResult ans;
+            ans = MessageBox.Show("Are you sure you want to exit?", "Quit", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (ans == DialogResult.OK)
             {
                 Application.Exit(); // Đóng ứng dụng
             }
@@ -92,6 +92,11 @@ namespace Giaodien_Quanly_Vuon
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DangKy_Load(object sender, EventArgs e)
         {
 
         }

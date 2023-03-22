@@ -19,37 +19,37 @@ namespace Giaodien_Quanly_Vuon
 
         private void linkLabel_QuenMatKhau_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            QuenMatKhau quenMatKhau = new QuenMatKhau();
-            quenMatKhau.ShowDialog();
+            FogotPassword forgotPass = new FogotPassword();
+            forgotPass.ShowDialog();
         }
 
         private void linkLabel_DangKy_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            DangKy dangKy = new DangKy();
-            dangKy.ShowDialog();
+            Resgister register = new Resgister();
+            register.ShowDialog();
         }
 
         Modify modify = new Modify();
 
         private void button_DangNhap_Click(object sender, EventArgs e)
         {
-            string tentk = textBox_TenTaiKhoan.Text;
-            string matkhau = textBox_MatKhau.Text;
+            string account = textBox_TenTaiKhoan.Text;
+            string password = textBox_MatKhau.Text;
 
-            if (tentk.Trim() == "")
+            if (account.Trim() == "")
             {
                 MessageBox.Show("Please enter your account!", "Notification"); 
                 return;
             }
-            else if (matkhau.Trim() == "")
+            else if (password.Trim() == "")
             {
                 MessageBox.Show("Enter password!", "Notification"); 
                 return;
             }
             else
             {
-                string query = "Select * from TaiKhoan where TenTaiKhoan = '" + tentk + "' and MatKhau = '" + matkhau + "'";
-                if (modify.TaiKhoans(query).Count != 0)
+                string query = "SELECT * FROM Account where AccountName = '" + password + "' and UserPassword = '" + password + "'";
+                if (modify.Accounts(query).Count != 0)
                 {
                     MessageBox.Show("Success login!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.Hide();
@@ -59,7 +59,7 @@ namespace Giaodien_Quanly_Vuon
                 }
                 else
                 {
-                    MessageBox.Show("The username or password entered is incorrect!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("The username or password entered incorrect!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -90,6 +90,11 @@ namespace Giaodien_Quanly_Vuon
         private void DangNhap_FormClosing(object sender, FormClosingEventArgs e)
         {
             DialogResult answer = MessageBox.Show("Do you want to exit the program?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        }
+
+        private void Login_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -13,9 +13,9 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Giaodien_Quanly_Vuon
 {
-    public partial class QuenMatKhau : Form
+    public partial class FogotPassword : Form
     {
-        public QuenMatKhau()
+        public FogotPassword()
         {
             InitializeComponent();
             label2.Text = "";
@@ -27,20 +27,20 @@ namespace Giaodien_Quanly_Vuon
             string email = textBox1.Text;
             if (email.Trim() == "")
             {
-                MessageBox.Show("Vui lòng nhập email đăng ký!", "Thông báo");
+                MessageBox.Show("Please enter your register email!", "Notification");
             }
             else
             {
-                string query = "Select * from TaiKhoan where Email = '" + email + "'";
-                if (modify.TaiKhoans(query).Count != 0)
+                string query = "SELECT * FROM Account where gmail = '" + email + "'";
+                if (modify.Accounts(query).Count != 0)
                 {
                     label2.ForeColor = Color.Blue;
-                    label2.Text = "Mật khẩu: " + modify.TaiKhoans(query)[0].MatKhau;
+                    label2.Text = "Password: " + modify.Accounts(query)[0].Password;
                 }
                 else
                 {
                     label2.ForeColor = Color.Red;
-                    label2.Text = "Email này chưa được đăng ký. Bạn vui lòng kiểm tra lại!";
+                    label2.Text = "This email is not registered. Please check again!";
                 }
             }
         }
@@ -49,6 +49,11 @@ namespace Giaodien_Quanly_Vuon
         private void QuenMatKhau_FormClosing(object sender, FormClosingEventArgs e)
         {
             DialogResult answer = MessageBox.Show("Do you want to exit the program?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        }
+
+        private void FogotPassword_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

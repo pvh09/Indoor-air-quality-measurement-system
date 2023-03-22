@@ -16,6 +16,8 @@ using System.Xml;
 using ZedGraph;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using Microsoft.Office.Interop.Excel;
+using System.Xml.Linq;
 
 namespace Giaodien_Quanly_Vuon
 {
@@ -49,22 +51,22 @@ namespace Giaodien_Quanly_Vuon
         // Có 2 cách làm với Đăng xuất
         //public event EventHandler Dangxuat;
         private void btnDangxuat_Click(object sender, EventArgs e)
-        {  
+        {
             if (MessageBox.Show("Are you sure you want to sign out?", "Notification", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
             {
                 this.Hide();
                 Login login = new Login();
                 login.ShowDialog();
-            } 
+            }
         }
 
         private void button_Thoat_Click(object sender, EventArgs e)
         {
-            DialogResult traloi;
-            traloi = MessageBox.Show("Are you sure you want to quit?", "Quit", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-            if (traloi == DialogResult.OK)
+            DialogResult ans;
+            ans = MessageBox.Show("Are you sure you want to quit?", "Quit", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (ans == DialogResult.OK)
             {
-               // Application.Exit(); // Đóng ứng dụng
+                // Application.Exit(); // Đóng ứng dụng
             }
         }
 
@@ -103,7 +105,7 @@ namespace Giaodien_Quanly_Vuon
             RollingPointPairList list2 = new RollingPointPairList(60000);
             RollingPointPairList list3 = new RollingPointPairList(60000);
             RollingPointPairList list4 = new RollingPointPairList(60000);
-            RollingPointPairList list5= new RollingPointPairList(60000);
+            RollingPointPairList list5 = new RollingPointPairList(60000);
             // Phần đặt tên chú thích cho 3 thông số trên biểu đồ
             LineItem curve = myPane.AddCurve("Temperature", list, Color.Red, SymbolType.None);
             LineItem curve1 = myPane.AddCurve("Humidity", list1, Color.Blue, SymbolType.None);
@@ -322,10 +324,6 @@ namespace Giaodien_Quanly_Vuon
                 listView1.Items.Add(item); // Gán biến datas vào cột tiếp theo của ListView
 
                 listView1.Items[listView1.Items.Count - 1].EnsureVisible(); // Hiển thị dòng được gán gần nhất ở ListView, tức là mình cuộn ListView theo dữ liệu gần nhất đó
-
-                
-
-
             }
         }
         private void ResetValue()
@@ -333,7 +331,7 @@ namespace Giaodien_Quanly_Vuon
             temp = String.Empty;    // Khôi phục tất cả các biến vào trạng thái ban đầu
             humi = String.Empty;
             co2 = String.Empty;
-            pm25 = String.Empty;   
+            pm25 = String.Empty;
             voc = String.Empty;
             o3 = String.Empty;
             status = 0; // Chuyển status về 0
@@ -356,12 +354,12 @@ namespace Giaodien_Quanly_Vuon
                     button8.Enabled = false;
                     button1.Enabled = false;
                     button2.Enabled = true;
-                    toolStripStatusLabel1.Text = "Connecting COM sucessfull!";
+                    toolStripStatusLabel1.Text = "Connecting COM sucessful!";
                     toolStripStatusLabel1.ForeColor = Color.Green;
                 }
                 catch
                 {
-                    MessageBox.Show("Can not COM gate " + serialPort1.PortName, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Cannot COM gate " + serialPort1.PortName, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 SaveSetting(); // Lưu cổng COM vào ComName
             }
@@ -419,10 +417,9 @@ namespace Giaodien_Quanly_Vuon
             Microsoft.Office.Interop.Excel.Workbook wb = xla.Workbooks.Add(Microsoft.Office.Interop.Excel.XlSheetType.xlWorksheet);
             Microsoft.Office.Interop.Excel.Worksheet ws = (Microsoft.Office.Interop.Excel.Worksheet)xla.ActiveSheet;
 
-            Microsoft.Office.Interop.Excel.Range rg = (Microsoft.Office.Interop.Excel.Range)ws.get_Range("A1", "B1");
-            Microsoft.Office.Interop.Excel.Range rf = (Microsoft.Office.Interop.Excel.Range)ws.get_Range("C1", "D1");
-            Microsoft.Office.Interop.Excel.Range ry = (Microsoft.Office.Interop.Excel.Range)ws.get_Range("E1", "F1");
-            Microsoft.Office.Interop.Excel.Range rz = (Microsoft.Office.Interop.Excel.Range)ws.get_Range("E1", null);
+            ws.get_Range("A1", "G1").Font.Bold = true;
+            ws.get_Range("A1", "G1").VerticalAlignment =
+                Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
 
             ws.Cells[1, 1] = "Time (s)                ";
             ws.Cells[1, 2] = "Temperature (°C)";
@@ -431,10 +428,12 @@ namespace Giaodien_Quanly_Vuon
             ws.Cells[1, 5] = "PM2.5 Concentration(ppm)";
             ws.Cells[1, 6] = "VOC Concentration(ppm)";
             ws.Cells[1, 7] = "O3 Concentration(ppm)";
-            rg.Columns.AutoFit();
-            rf.Columns.AutoFit();
-            ry.Columns.AutoFit();
-            rz.Columns.AutoFit();
+            //rg.Columns.AutoFit();
+            //rf.Columns.AutoFit();
+            //ry.Columns.AutoFit();
+            //rz.Columns.AutoFit();
+
+            ws.Columns.AutoFit();
             // Lưu từ ô đầu tiên của dòng thứ 2, tức ô A2
             int i = 2;
             int j = 1;
@@ -470,9 +469,34 @@ namespace Giaodien_Quanly_Vuon
             {
                 DialogResult ans;
                 ans = MessageBox.Show("Are you sure you want to delete the data?", "Delete data", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-                if (ans == DialogResult.OK)
+
+                if (serialPort1.IsOpen == true)
                 {
-                    if (serialPort1.IsOpen)
+
+                    if (checkBox1.Checked == true)
+                    {
+                        try
+                        {
+                            DialogResult ans1;
+                            SqlConnection sqlConn = new SqlConnection(ConnectionData.stringCon);
+                            sqlConn.Open();
+                            ans1 = MessageBox.Show("Do you want to save the data before deleting Database?", "Save", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                            if (ans1 == DialogResult.OK)
+                            {
+                                SaveToExcel(); // Thực thi hàm lưu ListView sang Excel
+                            }
+                            string DeleteQuery = @"DELETE FROM SensorMonitorData where ID = 5";
+                            SqlCommand cmd = new SqlCommand(DeleteQuery, sqlConn);
+                            cmd.ExecuteNonQuery();
+                            MessageBox.Show("Deleted sucessfull");
+
+                        }
+                        catch (Exception x)
+                        {
+                            MessageBox.Show(" Not Deleted" + x.Message);
+                        }
+                    }
+                    else
                     {
                         //Gửi ký tự "2" qua Serial
                         serialPort1.Write("2");
@@ -483,9 +507,10 @@ namespace Giaodien_Quanly_Vuon
                         //Xóa dữ liệu trong Form
                         ResetValue();
                     }
-                    else
-                        MessageBox.Show("Cannot run without connecting to the device", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                else
+                    MessageBox.Show("Cannot run without connecting to the device", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
             else
                 MessageBox.Show("Cannot delete without connecting to the device", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -495,7 +520,6 @@ namespace Giaodien_Quanly_Vuon
         {
             MessageBox.Show("PROJECT: INTEGRATED SENSOR SYSTEM FOR INDOOR AIR QUALITY MONITOR \n \nStudent name: Phi Van Hoa     Phone: 0967924460    Instructor: Dr. Tran Cuong Hung", "Information");
         }
-        // Set Độ ẩm tăng lên 1 đơn vị
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -514,8 +538,8 @@ namespace Giaodien_Quanly_Vuon
 
         private void DBConnect_Click(object sender, EventArgs e)
         {
-            
-            
+
+
         }
 
         private void zedGraphControl1_Load(object sender, EventArgs e)
@@ -629,6 +653,16 @@ namespace Giaodien_Quanly_Vuon
         }
 
         private void button4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void all_click(object sender, EventArgs e)
         {
 
         }

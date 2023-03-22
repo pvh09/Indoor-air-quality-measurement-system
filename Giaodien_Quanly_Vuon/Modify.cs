@@ -17,9 +17,9 @@ namespace Giaodien_Quanly_Vuon
         SqlCommand sqlCommand; // dùng để truy vấn các câu lệnh insert, update, delete...
         SqlDataReader dataReader; // dùng để đọc dữ liệu trong bảng
 
-        public List<TaiKhoan> TaiKhoans(string query)   // dùng để check tài khoản
+        public List<Account> Accounts(string query)   // dùng để check tài khoản
         {
-            List<TaiKhoan> taiKhoans = new List<TaiKhoan>();
+            List<Account> taiKhoans = new List<Account>();
 
             using (SqlConnection sqlConnection = Connection.GetSqlConnection())
             {
@@ -28,7 +28,7 @@ namespace Giaodien_Quanly_Vuon
                 dataReader = sqlCommand.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    taiKhoans.Add(new TaiKhoan(dataReader.GetString(0), dataReader.GetString(1)));
+                    taiKhoans.Add(new Account(dataReader.GetString(0), dataReader.GetString(1)));
                 }
                 sqlConnection.Close();
             }

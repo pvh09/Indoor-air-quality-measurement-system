@@ -17,7 +17,7 @@ namespace Giaodien_Quanly_Vuon
         SqlCommand DataCommand; // dùng để truy vấn các câu lệnh insert, update, delete...
         SqlDataReader ReadData; // dùng để đọc dữ liệu trong bảng
 
-        public List<Data> DataMonitor(string query)   // 
+        public List<Data> DataMonitor(string query)  
         {
             List<Data> dataMonitor = new List<Data>();
 
@@ -27,7 +27,7 @@ namespace Giaodien_Quanly_Vuon
                 while (ReadData.Read())
                 {
                    // dataMonitor.Add(new Data(ReadData.GetString(0), ReadData.GetString(1), ReadData.GetString(2), ReadData.GetString(3)));
-                    dataMonitor.Add(new Data(ReadData.GetString(1), ReadData.GetString(2), ReadData.GetString(3), ReadData.GetString(4)));
+                    dataMonitor.Add(new Data(ReadData.GetString(1), ReadData.GetString(2), ReadData.GetString(3), ReadData.GetString(4), ReadData.GetString(5), ReadData.GetString(6), ReadData.GetString(7)));
                 }
                 sqlConnect.Close();
             }
