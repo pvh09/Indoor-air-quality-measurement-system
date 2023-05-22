@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 // Giao tiếp qua Serial
-using System.IO;
 using System.IO.Ports;
-using System.Xml;
 // Thêm ZedGraph
 using ZedGraph;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using Color = System.Drawing.Color;
+using System.Diagnostics;
+using OfficeOpenXml;
+using System.IO;
 using Microsoft.Office.Interop.Excel;
-using System.Xml.Linq;
+using Application = Microsoft.Office.Interop.Excel.Application;
+using System.Windows.Interop;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Worksheet = Microsoft.Office.Interop.Excel.Worksheet;
+using Workbook = Microsoft.Office.Interop.Excel.Workbook;
 
 namespace Giaodien_Quanly_Vuon
 {
@@ -27,13 +25,15 @@ namespace Giaodien_Quanly_Vuon
 
         private DateTime datetime;  //Khai báo biến thời gian
 
+        string msg = "";
+
         int baudrate = 0;
         string temp = String.Empty; // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
         string humi = String.Empty; // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
         string co2 = String.Empty;  // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
         string pm25 = String.Empty; // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
         string voc = String.Empty; // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
-        string o3 = String.Empty;  // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
+        string co = String.Empty;  // Khai báo chuỗi để lưu dữ liệu cảm biến gửi qua Serial
         int status = 0; // Khai báo biến để xử lý sự kiện vẽ đồ thị
         //Khai báo biến thời gian để vẽ đồ thị
         double m_temp = 0;
@@ -41,13 +41,15 @@ namespace Giaodien_Quanly_Vuon
         double m_co2 = 0;
         double m_pm25 = 0;
         double m_voc = 0;
-        double m_o3 = 0;
+        double m_co = 0;
 
         int i = 0;
         public Home()
         {
             InitializeComponent();
         }
+
+        LogFile logFile = new LogFile();
         // Có 2 cách làm với Đăng xuất
         //public event EventHandler Dangxuat;
         private void btnDangxuat_Click(object sender, EventArgs e)
@@ -57,6 +59,8 @@ namespace Giaodien_Quanly_Vuon
                 this.Hide();
                 Login login = new Login();
                 login.ShowDialog();
+                msg = "sign out";
+                logFile.WriteLog(LogFile.LogKind.Information, msg);
             }
         }
 
@@ -64,6 +68,8 @@ namespace Giaodien_Quanly_Vuon
         {
             DialogResult ans;
             ans = MessageBox.Show("Are you sure you want to quit?", "Quit", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            msg = "Quit program";
+            logFile.WriteLog(LogFile.LogKind.Information, msg);
             if (ans == DialogResult.OK)
             {
                 // Application.Exit(); // Đóng ứng dụng
@@ -83,6 +89,8 @@ namespace Giaodien_Quanly_Vuon
                 if (serialPort1.IsOpen)
                 {
                     serialPort1.Close();
+                    msg = "close COM gate";
+                    logFile.WriteLog(LogFile.LogKind.Information, msg);
                 }
             }
         }
@@ -111,8 +119,8 @@ namespace Giaodien_Quanly_Vuon
             LineItem curve1 = myPane.AddCurve("Humidity", list1, Color.Blue, SymbolType.None);
             LineItem curve2 = myPane.AddCurve("CO2 Concentration", list2, Color.Chocolate, SymbolType.None);
             LineItem curve3 = myPane.AddCurve("PM2.5 Concentration", list3, Color.Violet, SymbolType.None);
-            LineItem curve4 = myPane.AddCurve("VOC Concentration", list4, Color.Yellow, SymbolType.None);
-            LineItem curve5 = myPane.AddCurve("O3 Concentration", list5, Color.Green, SymbolType.None);
+            LineItem curve4 = myPane.AddCurve("VOC Concentration", list4, Color.Brown, SymbolType.None);
+            LineItem curve5 = myPane.AddCurve("CO Concentration", list5, Color.Green, SymbolType.None);
 
             myPane.XAxis.Scale.Min = 0;
             myPane.XAxis.Scale.Max = 30;
@@ -144,6 +152,9 @@ namespace Giaodien_Quanly_Vuon
         {
             Properties.Settings.Default.ComName = comboBox1.Text;
             Properties.Settings.Default.Save();
+            msg = "Save COM: " + comboBox1.Text;
+            logFile.WriteLog(LogFile.LogKind.Information, msg);
+            msg = "";
         }
         // Nhận và xử lý string gửi từ Serial
         private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -156,19 +167,25 @@ namespace Giaodien_Quanly_Vuon
                 co2 = arrList[2];
                 pm25 = arrList[3];
                 voc = arrList[4];
-                o3 = arrList[5];
+                co = arrList[5];
                 i++;
                 double.TryParse(temp, out m_temp); // Chuyển đổi sang kiểu double
                 double.TryParse(humi, out m_humi);
                 double.TryParse(co2, out m_co2);
                 double.TryParse(pm25, out m_pm25); // Chuyển đổi sang kiểu double
                 double.TryParse(voc, out m_voc);
-                double.TryParse(o3, out m_o3);
+                double.TryParse(co, out m_co);
                 //realtime = realtime / 1000.0; // Đối ms sang s
                 status = 1; // Bắt sự kiện xử lý xong chuỗi, đổi starus về 1 để hiển thị dữ liệu trong ListView và vẽ đồ thị
+
+                msg = String.Format("Received data from sensor: temp={0} humi={1} co2={2} pm25={3} voc={4} co={5}", temp, humi, co2, pm25, voc, co);
+                logFile.WriteLog(LogFile.LogKind.GetData, msg);
+                msg = "";
             }
             catch
             {
+                msg = "Received data error!!";
+                logFile.WriteLog(LogFile.LogKind.Error, msg);
                 return;
             }
         }
@@ -217,7 +234,7 @@ namespace Giaodien_Quanly_Vuon
             list2.Add(i, m_co2);
             list3.Add(i, m_pm25); // Thêm điểm trên đồ thị
             list4.Add(i, m_voc);
-            list5.Add(i, m_o3);
+            list5.Add(i, m_co);
 
             Scale xScale = zedGraphControl1.GraphPane.XAxis.Scale;
             Scale yScale = zedGraphControl1.GraphPane.YAxis.Scale;
@@ -275,13 +292,13 @@ namespace Giaodien_Quanly_Vuon
                 yScale.Min = m_voc - yScale.MajorStep;
             }
 
-            if (m_o3 > yScale.Max - yScale.MajorStep)
+            if (m_co > yScale.Max - yScale.MajorStep)
             {
-                yScale.Max = m_o3 + yScale.MajorStep;
+                yScale.Max = m_co + yScale.MajorStep;
             }
-            else if (m_o3 < yScale.Min + yScale.MajorStep)
+            else if (m_co < yScale.Min + yScale.MajorStep)
             {
-                yScale.Min = m_o3 - yScale.MajorStep;
+                yScale.Min = m_co - yScale.MajorStep;
             }
 
             zedGraphControl1.AxisChange();
@@ -303,14 +320,17 @@ namespace Giaodien_Quanly_Vuon
                 label22.Text = pm25;
                 label25.Text = voc;
                 label10.Text = pm25;
-                label28.Text = o3;
+                label28.Text = co;
 
                 //Tạo 1 chuỗi gồm thời gian hiện tại
                 datetime = DateTime.Now;
                 string time = datetime.Day + "/" + datetime.Month + "/" + datetime.Year + "/" + datetime.Hour + ":" + datetime.Minute + ":" + datetime.Second;
                 //string DataQuery = "Insert into GreenMonitor values ('" + nhietdo + "', '" + doam + "','" + anhsang + "','" + time+ "')";
-                string DataQuery = "INSERT INTO SensorMonitorData(Temperature, Humidity, co2, pm25, voc, o3, realTime) values ('" + temp + "', '" + humi + "','" + co2 + "','" + pm25 + "', '" + voc + "', '" + o3 + "', '" + time + "')";
+                string DataQuery = "INSERT INTO SensorMonitorData(Temperature, Humidity, co2, pm25, voc, co, realTime) values ('" + temp + "', '" + humi + "','" + co2 + "','" + pm25 + "', '" + voc + "', '" + co + "', '" + time + "')";
                 dataModify.SqlCommand(DataQuery);
+                msg = String.Format("save database sucessfull: temp={0} humi={1} co2={2} pm25={3} voc={4} co={5}", temp, humi, co2, pm25, voc, co);
+                logFile.WriteLog(LogFile.LogKind.GetData, msg);
+                msg = "";
                 //Tạo listview với cột đầu tiên là thời gian
                 ListViewItem item = new ListViewItem(time); // Gán biến realtime vào cột đầu tiên của ListView
 
@@ -320,10 +340,13 @@ namespace Giaodien_Quanly_Vuon
                 item.SubItems.Add(co2);
                 item.SubItems.Add(pm25);
                 item.SubItems.Add(voc);
-                item.SubItems.Add(o3);
+                item.SubItems.Add(co);
                 listView1.Items.Add(item); // Gán biến datas vào cột tiếp theo của ListView
-
+                msg = String.Format("write listView: time: {0} temp={1} humi={2} co2={3} pm25={4} voc={5} co={6}", time, temp, humi, co2, pm25, voc, co);
+                logFile.WriteLog(LogFile.LogKind.GetData, msg);
+                msg = "";
                 listView1.Items[listView1.Items.Count - 1].EnsureVisible(); // Hiển thị dòng được gán gần nhất ở ListView, tức là mình cuộn ListView theo dữ liệu gần nhất đó
+                
             }
         }
         private void ResetValue()
@@ -333,7 +356,7 @@ namespace Giaodien_Quanly_Vuon
             co2 = String.Empty;
             pm25 = String.Empty;
             voc = String.Empty;
-            o3 = String.Empty;
+            co = String.Empty;
             status = 0; // Chuyển status về 0
         }
 
@@ -356,10 +379,15 @@ namespace Giaodien_Quanly_Vuon
                     button2.Enabled = true;
                     toolStripStatusLabel1.Text = "Connecting COM sucessful!";
                     toolStripStatusLabel1.ForeColor = Color.Green;
+                    msg = "connection established successfully";
+                    logFile.WriteLog(LogFile.LogKind.Information, msg);
                 }
                 catch
                 {
                     MessageBox.Show("Cannot COM gate " + serialPort1.PortName, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    msg = "connection established error";
+                    logFile.WriteLog(LogFile.LogKind.Error, msg);
+                    msg = "";
                 }
                 SaveSetting(); // Lưu cổng COM vào ComName
             }
@@ -383,9 +411,15 @@ namespace Giaodien_Quanly_Vuon
                 label15.ForeColor = Color.Red;
                 toolStripStatusLabel1.Text = "Disconnected COM gate!";
                 toolStripStatusLabel1.ForeColor = Color.Red;
+                msg = "Disconnection established successfully";
+                logFile.WriteLog(LogFile.LogKind.Information, msg);
+                msg = "";
             }
             else
             {
+                msg = "Disconnection established error";
+                logFile.WriteLog(LogFile.LogKind.Error, msg);
+                msg = "";
                 MessageBox.Show("GOM gate disable");
             }
         }
@@ -412,44 +446,66 @@ namespace Giaodien_Quanly_Vuon
         //Hàm lưu dữ liệu lên Excell
         void SaveToExcel()
         {
-            Microsoft.Office.Interop.Excel.Application xla = new Microsoft.Office.Interop.Excel.Application();
-            xla.Visible = true;
-            Microsoft.Office.Interop.Excel.Workbook wb = xla.Workbooks.Add(Microsoft.Office.Interop.Excel.XlSheetType.xlWorksheet);
-            Microsoft.Office.Interop.Excel.Worksheet ws = (Microsoft.Office.Interop.Excel.Worksheet)xla.ActiveSheet;
+            string currentdatetime = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string queryString = "select * FROM SensorMonitorData";
+            string filePath = @"D:\KLTN\ExportExcel\AirQualityData.XLSX";
 
-            ws.get_Range("A1", "G1").Font.Bold = true;
-            ws.get_Range("A1", "G1").VerticalAlignment =
-                Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
-
-            ws.Cells[1, 1] = "Time (s)                ";
-            ws.Cells[1, 2] = "Temperature (°C)";
-            ws.Cells[1, 3] = "Humidity (%)";
-            ws.Cells[1, 4] = "CO2 Concentration(ppm)";
-            ws.Cells[1, 5] = "PM2.5 Concentration(ppm)";
-            ws.Cells[1, 6] = "VOC Concentration(ppm)";
-            ws.Cells[1, 7] = "O3 Concentration(ppm)";
-            //rg.Columns.AutoFit();
-            //rf.Columns.AutoFit();
-            //ry.Columns.AutoFit();
-            //rz.Columns.AutoFit();
-
-            ws.Columns.AutoFit();
-            // Lưu từ ô đầu tiên của dòng thứ 2, tức ô A2
-            int i = 2;
-            int j = 1;
-
-            foreach (ListViewItem comp in listView1.Items)
+            try
             {
-                ws.Cells[i, j] = comp.Text.ToString();
-                foreach (ListViewItem.ListViewSubItem drv in comp.SubItems)
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+
+                // Connect to the SQL Server database and retrieve the data you want to export
+                using (SqlConnection connection = new SqlConnection(ConnectionData.stringCon))
                 {
-                    ws.Cells[i, j] = drv.Text.ToString();
-                    j++;
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(queryString, connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            // Create a new Excel application and workbook
+                            Application excelApp = new Application();
+                            Workbook excelWorkbook = excelApp.Workbooks.Add();
+                            Worksheet excelWorksheet = excelWorkbook.Worksheets[1];
+                            // Add the headers to the 1th row
+                            int col = 1;
+                            int row = 1;
+                            for (int i = 0; i < reader.FieldCount - 1; i++)
+                            {
+                                excelWorksheet.Cells[row, col].Value2 = reader.GetName(i + 1);
+                                
+                                col++;
+                            }
+
+                            // Iterate through the rows of data and insert them into the worksheet, starting from the 12th row
+                            row = 2;
+                            while (reader.Read())
+                            {
+                                col = 1;
+                                for (int i = 0; i < reader.FieldCount - 1; i++)
+                                {
+                                    excelWorksheet.Cells[row, col].Value2 = reader[i + 1];
+                                    col++;
+                                }
+                                row++;
+                            }
+
+                            // Save the workbook and close the Excel application
+                            excelWorkbook.SaveAs(filePath);
+                            excelWorkbook.Close();
+                            excelApp.Quit();
+                        }
+                    }
                 }
-                j = 1;
-                i++;
+            }
+
+            catch (Exception exception)
+            {
+                string msg = exception.ToString() + " error save excel!!!";
+                logFile.WriteLog(LogFile.LogKind.Error, msg);
             }
         }
+        
 
         // Hàm thiết lập nút bấm "Lưu"
         private void bt_save_Click_1(object sender, EventArgs e)
@@ -459,6 +515,13 @@ namespace Giaodien_Quanly_Vuon
             if (ans == DialogResult.OK)
             {
                 SaveToExcel(); // Thực thi hàm lưu ListView sang Excel
+                if (ans == DialogResult.OK)
+                {
+                    msg = "Save data into excel sucessfully";
+                    MessageBox.Show("Save sucessfully");
+                    Process.Start("D:\\KLTN\\ExportExcel\\AirQualityData.XLSX");
+                    logFile.WriteLog(LogFile.LogKind.Information, msg);
+                }
             }
         }
 
@@ -477,19 +540,47 @@ namespace Giaodien_Quanly_Vuon
                     {
                         try
                         {
-                            DialogResult ans1;
                             SqlConnection sqlConn = new SqlConnection(ConnectionData.stringCon);
                             sqlConn.Open();
-                            ans1 = MessageBox.Show("Do you want to save the data before deleting Database?", "Save", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-                            if (ans1 == DialogResult.OK)
+                            DialogResult dialogResult = MessageBox.Show("Sure", "Do you want to save the data before deleting Database?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            if (dialogResult == DialogResult.Yes)
                             {
                                 SaveToExcel(); // Thực thi hàm lưu ListView sang Excel
+                                if (dialogResult == DialogResult.Yes)
+                                {
+                                    msg = "Save data into excel sucessfully";
+                                    MessageBox.Show("Save sucessfully");
+                                    Process.Start("D:\\KLTN\\ExportExcel\\AirQualityData.XLSX");
+                                    logFile.WriteLog(LogFile.LogKind.Information, msg);
+                                }
+                                //Gửi ký tự "2" qua Serial
+                                serialPort1.Write("2");
+                                // Xóa listview
+                                listView1.Items.Clear();
+                                //Xóa dữ liệu trong Form
+                                ResetValue();
+                                string DeleteQuery = @"DELETE FROM SensorMonitorData";
+                                SqlCommand cmd = new SqlCommand(DeleteQuery, sqlConn);
+                                cmd.ExecuteNonQuery();
+                                msg = "Deleted data from database sucessfully";
+                                logFile.WriteLog(LogFile.LogKind.Information, msg);
+                                MessageBox.Show("Deleted sucessfully");
                             }
-                            string DeleteQuery = @"DELETE FROM SensorMonitorData where ID = 5";
-                            SqlCommand cmd = new SqlCommand(DeleteQuery, sqlConn);
-                            cmd.ExecuteNonQuery();
-                            MessageBox.Show("Deleted sucessfull");
-
+                            else if (dialogResult == DialogResult.No)
+                            {
+                                //Gửi ký tự "2" qua Serial
+                                serialPort1.Write("2");
+                                // Xóa listview
+                                listView1.Items.Clear();
+                                //Xóa dữ liệu trong Form
+                                ResetValue();
+                                string DeleteQuery = @"DELETE FROM SensorMonitorData";
+                                SqlCommand cmd = new SqlCommand(DeleteQuery, sqlConn);
+                                cmd.ExecuteNonQuery();
+                                msg = "Deleted data from database sucessfully";
+                                logFile.WriteLog(LogFile.LogKind.Information, msg);
+                                MessageBox.Show("Deleted sucessfully");
+                            }
                         }
                         catch (Exception x)
                         {
@@ -500,25 +591,25 @@ namespace Giaodien_Quanly_Vuon
                     {
                         //Gửi ký tự "2" qua Serial
                         serialPort1.Write("2");
-
                         // Xóa listview
                         listView1.Items.Clear();
-
                         //Xóa dữ liệu trong Form
                         ResetValue();
                     }
                 }
                 else
                     MessageBox.Show("Cannot run without connecting to the device", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
             }
             else
                 MessageBox.Show("Cannot delete without connecting to the device", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-        // Hàm này đơn giản là mình có thể ghi thông tin các thành viên nhóm hay lời cảm ơn với thầy cô
         private void bt_about_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("PROJECT: INTEGRATED SENSOR SYSTEM FOR INDOOR AIR QUALITY MONITOR \n \nStudent name: Phi Van Hoa     Phone: 0967924460    Instructor: Dr. Tran Cuong Hung", "Information");
+            msg = "PROJECT: INTEGRATED SENSOR SYSTEM FOR INDOOR AIR QUALITY MONITOR  Student name: Phi Van Hoa   Phone: 0967924460  Instructor: Dr. Tran Cuong Hung";
+            logFile.WriteLog(LogFile.LogKind.Information, msg);
+            MessageBox.Show(msg, "Information");
+            
+            
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -538,7 +629,6 @@ namespace Giaodien_Quanly_Vuon
 
         private void DBConnect_Click(object sender, EventArgs e)
         {
-
 
         }
 
@@ -665,6 +755,14 @@ namespace Giaodien_Quanly_Vuon
         private void all_click(object sender, EventArgs e)
         {
 
+        }
+
+        private void log_click(object sender, EventArgs e)
+        {
+            string folderPath = @"D:\KLTN\Project\IndoorAirQuality\logs";
+            Process.Start("explorer.exe", folderPath);
+            msg = "Open log file sucessfull";
+            logFile.WriteLog(LogFile.LogKind.Information, msg);
         }
     }
 }

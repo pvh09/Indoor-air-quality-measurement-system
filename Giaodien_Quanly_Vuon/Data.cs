@@ -14,7 +14,7 @@ namespace Giaodien_Quanly_Vuon
         private string co2;
         private string pm25;
         private string voc;
-        private string o3;
+        private string co;
         private string realTime;
 
         public Data()
@@ -29,7 +29,7 @@ namespace Giaodien_Quanly_Vuon
             this.co2 = co2;
             this.pm25 = pm25;
             this.voc = voc;
-            this.o3 = o3;
+            this.co = co;
             this.realTime = realTime;
         }
 
@@ -39,7 +39,7 @@ namespace Giaodien_Quanly_Vuon
         public string Co2 { get => co2; set => co2 = value; }
         public string Pm25 { get => pm25; set => pm25 = value; }
         public string Voc { get => voc; set => voc = value; }
-        public string O3 { get => o3; set => o3 = value; }
+        public string CO { get => co; set => co = value; }
         public string RealTime { get => realTime; set => realTime = value; }
     }
 }
