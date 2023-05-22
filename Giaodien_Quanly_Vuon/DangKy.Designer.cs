@@ -1,6 +1,6 @@
 ﻿namespace Giaodien_Quanly_Vuon
 {
-    partial class DangKy
+    partial class Resgister
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DangKy));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Resgister));
             this.textBox_Email = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.textBox_XNMatKhau = new System.Windows.Forms.TextBox();
@@ -54,7 +54,7 @@
             this.textBox_Email.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox_Email.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox_Email.Location = new System.Drawing.Point(272, 256);
-            this.textBox_Email.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox_Email.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_Email.Name = "textBox_Email";
             this.textBox_Email.Size = new System.Drawing.Size(316, 30);
             this.textBox_Email.TabIndex = 40;
@@ -76,7 +76,7 @@
             this.textBox_XNMatKhau.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox_XNMatKhau.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox_XNMatKhau.Location = new System.Drawing.Point(272, 192);
-            this.textBox_XNMatKhau.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox_XNMatKhau.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_XNMatKhau.Name = "textBox_XNMatKhau";
             this.textBox_XNMatKhau.Size = new System.Drawing.Size(316, 30);
             this.textBox_XNMatKhau.TabIndex = 38;
@@ -98,7 +98,7 @@
             this.textBox_MatKhau.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox_MatKhau.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox_MatKhau.Location = new System.Drawing.Point(272, 128);
-            this.textBox_MatKhau.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox_MatKhau.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_MatKhau.Name = "textBox_MatKhau";
             this.textBox_MatKhau.Size = new System.Drawing.Size(316, 30);
             this.textBox_MatKhau.TabIndex = 36;
@@ -120,7 +120,7 @@
             this.textBox_TenTaiKhoan.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox_TenTaiKhoan.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox_TenTaiKhoan.Location = new System.Drawing.Point(272, 64);
-            this.textBox_TenTaiKhoan.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox_TenTaiKhoan.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_TenTaiKhoan.Name = "textBox_TenTaiKhoan";
             this.textBox_TenTaiKhoan.Size = new System.Drawing.Size(316, 30);
             this.textBox_TenTaiKhoan.TabIndex = 34;
@@ -168,7 +168,7 @@
             this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox3.Image = global::Giaodien_Quanly_Vuon.Properties.Resources.hinh_anh_gif_thanh_pho_buon;
             this.pictureBox3.Location = new System.Drawing.Point(28, 33);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(247, 185);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -180,7 +180,7 @@
             this.pictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox2.Image = global::Giaodien_Quanly_Vuon.Properties.Resources.anh_gif_1_min;
             this.pictureBox2.Location = new System.Drawing.Point(741, 33);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(247, 185);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -198,6 +198,7 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 33;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // groupBox1
             // 
@@ -233,12 +234,13 @@
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "DangKy";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FormDangKy";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DangKy_FormClosing);
+            this.Load += new System.EventHandler(this.DangKy_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 
 namespace Giaodien_Quanly_Vuon
 {
-    public class TaiKhoan
+    public class Account
     {
-        private string tenTaiKhoan;
-        private string matKhau;
+        private string account;
+        private string password;
 
-        public TaiKhoan()
+        public Account()
         {
         }
 
-        public TaiKhoan(string tenTaiKhoan, string matKhau)
+        public Account(string account, string password)
         {
-            this.tenTaiKhoan = tenTaiKhoan;
-            this.matKhau = matKhau;
+            this.account = account;
+            this.password = password;
         }
 
-        public string TenTaiKhoan { get => tenTaiKhoan; set => tenTaiKhoan = value; }
-        public string MatKhau { get => matKhau; set => matKhau = value; }
+        public string AccountName { get => account; set => account = value; }
+        public string Password { get => password; set => password = value; }
     }
 }

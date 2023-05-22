@@ -11,9 +11,9 @@ using System.Text.RegularExpressions;
 
 namespace Giaodien_Quanly_Vuon
 {
-    public partial class DangKy : Form
+    public partial class Resgister : Form
     {
-        public DangKy()
+        public Resgister()
         {
             InitializeComponent();
         }
@@ -31,55 +31,55 @@ namespace Giaodien_Quanly_Vuon
 
         private void button_DangKy_Click(object sender, EventArgs e)
         {
-            string tentk = textBox_TenTaiKhoan.Text;
-            string matkhau = textBox_MatKhau.Text;
-            string xnmatkhau = textBox_XNMatKhau.Text;
+            string account = textBox_TenTaiKhoan.Text;
+            string password = textBox_MatKhau.Text;
+            string passCheck = textBox_XNMatKhau.Text;
             string email = textBox_Email.Text;
-            if (!CheckAccount(tentk))
+            if (!CheckAccount(account))
             {
-                MessageBox.Show("Vui lòng nhập tên tài khoản dài 6-24 ký tự với các ký tự chữ và số, chữ hoa và chữ thường!", "Thông báo");
+                MessageBox.Show("Please enter your account name 6-24 characters long with alpha characters, uppercase and lowercase!", "Notification");
                 return;
             }
-            if (!CheckAccount(matkhau))
+            if (!CheckAccount(password))
             {
-                MessageBox.Show("Vui lòng nhập tên mật khẩu dài 6-24 ký tự với các ký tự chữ và số, chữ hoa và chữ thường!", "Thông báo");
+                MessageBox.Show("Please enter a password name 6-24 characters long with alpha characters, uppercase and lowercase!", "Notification");
                 return;
             }
-            if (xnmatkhau != matkhau)
+            if (passCheck != password)
             {
-                MessageBox.Show("Vui lòng xác nhận mật khẩu chính xác!", "Thông báo");
+                MessageBox.Show("Please confirm the correct password!", "Notification");
                 return;
             }
             if (!CheckEmail(email))
             {
-                MessageBox.Show("Vui lòng nhập đúng định dạng email!", "Thông báo");
+                MessageBox.Show("Please enter correct email format", "Notification");
                 return;
             }
-            if (modify.TaiKhoans("Select * from TaiKhoan where Email = '" + email + "'").Count != 0)
+            if (modify.Accounts("SELECT * FROM Account where gmail = '" + email + "'").Count != 0)
             {
-                MessageBox.Show("Email này đã được đăng ký, vui lòng đăng ký email khác!", "Thông báo");
+                MessageBox.Show("This email esixted, please register other email!", "Notification");
                 return;
             }
             try
             {
-                string query = "Insert into Taikhoan values ('" + tentk + "', '" + matkhau + "','" + email + "')";
+                string query = "Insert into Account values ('" + account + "', '" + password + "','" + email + "')";
                 modify.Command(query);
-                if (MessageBox.Show("Đăng ký thành công! Bạn có muốn đăng nhập luôn không?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (MessageBox.Show("Sign up completed! Do you want to login??", "Notification", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     this.Close();
                 }
             }
             catch
             {
-                MessageBox.Show("Tên tài khoản này đã được đăng ký, vui lòng đăng ký tên tài khoản khác!", "Thông báo");
+                MessageBox.Show("This account name is registered, please register another account!", "Notification");
             }
         }
 
         private void btnThoat_Click(object sender, EventArgs e)
         {
-            DialogResult traloi;
-            traloi = MessageBox.Show("Bạn có chắc muốn thoát?", "Thoát", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-            if (traloi == DialogResult.OK)
+            DialogResult ans;
+            ans = MessageBox.Show("Are you sure you want to exit?", "Quit", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (ans == DialogResult.OK)
             {
                 Application.Exit(); // Đóng ứng dụng
             }
@@ -89,6 +89,16 @@ namespace Giaodien_Quanly_Vuon
         private void DangKy_FormClosing(object sender, FormClosingEventArgs e)
         {
             DialogResult answer = MessageBox.Show("Do you want to exit the program?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DangKy_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

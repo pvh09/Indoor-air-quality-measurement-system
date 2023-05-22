@@ -16,7 +16,7 @@ namespace Giaodien_Quanly_Vuon
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DangNhap());
+            Application.Run(new Home());
         }
     }
 }

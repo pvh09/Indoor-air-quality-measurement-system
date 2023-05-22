@@ -149,6 +149,8 @@
       <DependentUpon>Database1.mdf</DependentUpon>
     </Content>
     <Content Include="License-LGPL.txt" />
+    <None Include="Resources\logo-removebg-preview.png" />
+    <None Include="Resources\logo.png" />
     <None Include="Resources\z3957066360356_79c90aeb0e24984afc63edbcec198a13.jpg" />
     <None Include="Resources\icon_Led.png" />
     <None Include="Resources\huong toi tuong lai.gif" />

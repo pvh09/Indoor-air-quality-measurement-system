@@ -10,7 +10,7 @@ namespace Giaodien_Quanly_Vuon
 {
     public class ConnectionData
     {
-        private static string stringCon = @"Data Source=HOAPV1\SQLEXPRESS;Initial Catalog=GreenData;User ID=sa;Password=112233";
+        public static string stringCon = @"Data Source=HOAPV1\SQLEXPRESS;Initial Catalog=AirQualityData;Persist Security Info=True;User ID=sa;Password=112233";
         public static SqlConnection GetSqlConnect()
         {
             return new SqlConnection(stringCon);
